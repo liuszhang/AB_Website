@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="寸金 - 轻量级 C# 插件框架，零依赖、高性能、开箱即用">
+    <meta property="og:title" content="寸金 CJ.Plug - 快速武装你的AI">
+    <meta property="og:description" content="轻量级 C# 插件框架，零代码将任意工具接入AI，零依赖、高性能、开箱即用">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.cjplug.cn/">
+    <meta property="og:image" content="https://www.cjplug.cn/images/og-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="寸金 CJ.Plug - 快速武装你的AI">
+    <meta name="twitter:description" content="轻量级 C# 插件框架，零代码将任意工具接入AI，零依赖、高性能、开箱即用">
+    <meta name="twitter:image" content="https://www.cjplug.cn/images/og-cover.png">
+    <link rel="canonical" href="https://www.cjplug.cn/">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8C%3C/text%3E%3C/svg%3E">
+    <title>寸金 - 快速武装你的AI</title>
+    <link rel="stylesheet" href="css/style.css">
+    <noscript><style>[data-animate]{opacity:1!important;transform:none!important;animation:none!important;}</style></noscript>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "需要安装吗？对电脑有什么要求？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "不需要安装。下载压缩包后解压到任意位置就能用，支持 Windows 10 及以上系统。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "接入好的工具可以分享给同事吗？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "可以。一个人接好工具后，可以导出配置文件分享给团队，所有人在自己的 AI 客户端中都能使用。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "支持哪些 AI 客户端？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "目前已适配 Trae、Codex、WorkBuddy、Claude Code、Hermes 等主流 AI 客户端，后续还会持续增加。"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "遇到问题怎么办？",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "可以发邮件到 liusz@liusz.com，或在 GitHub Issues 上提问，我们会尽快回复。"
+                }
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- ===== 导航栏 ===== -->
+    <header class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <span class="logo-icon">&#9670;</span>
+                <span class="logo-text">CJ<span class="logo-dot">.</span>Plug 寸金</span>
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#quickstart">快速开始</a>
+                <a href="#highlights">场景</a>
+                <a href="#architecture">优势</a>
+                <a href="#screenshots">截图</a>
+                <a href="#video">视频</a>
+                <a href="#download">下载</a>
+                <div class="nav-dropdown">
+                    <span class="nav-dropdown-trigger">
+                        更多产品
+                        <svg class="dropdown-caret" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a href="https://github.com/liuszhang/CJPlug" target="_blank" rel="noopener">CJPlug 无代码AI接入工具框架</a>
+                        <a href="https://github.com/liuszhang/CJOntology" target="_blank" rel="noopener">CJOntology 自进化本体平台</a>
+                        <a href="https://github.com/liuszhang/Liuvis" target="_blank" rel="noopener">CJLiuvis 自然语言建模</a>
+                        <a href="https://github.com/liuszhang/CJ_DSL" target="_blank" rel="noopener">CJDSL 下一代Web应用</a>
+                    </div>
+                </div>
+            </nav>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="菜单">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== Hero 区域 ===== -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <div class="hero-badge">v0.1.0 现已发布</div>
+            <h1 class="hero-title">
+                让 AI 客户端<br>
+                <span class="gradient-text">直接操作你的工具</span>
+            </h1>
+            <p class="hero-desc">
+                把你日常使用的桌面程序、脚本、接口一键接入 Trae、Codex、WorkBuddy 等 AI 客户端——<br>
+                无需修改任何代码，让 AI 直接替你完成工作。
+            </p>
+            <!-- 流程示意图 -->
+            <div class="hero-flow" data-animate>
+                <div class="flow-step">
+                    <div class="flow-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                    </div>
+                    <span class="flow-label">你的工具</span>
+                    <span class="flow-sublabel">桌面程序 · 脚本 · 接口 · 设备</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </div>
+                <div class="flow-step flow-step-highlight">
+                    <div class="flow-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+                    </div>
+                    <span class="flow-label">寸金接入</span>
+                    <span class="flow-sublabel">无需改动 · 自动连接</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <span class="flow-label">一键发布</span>
+                    <span class="flow-sublabel">立即生效 · 无需等待</span>
+                </div>
+                <div class="flow-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a7 7 0 017 7c0 2.4-1.2 4.5-3 5.7V17a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2.3C6.2 13.5 5 11.4 5 9a7 7 0 017-7z"/><path d="M10 21h4"/></svg>
+                    </div>
+                    <span class="flow-label">AI 客户端</span>
+                    <span class="flow-sublabel">在 AI 中直接使用</span>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <a href="#download" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    免费下载
+                </a>
+                <a href="#highlights" class="btn btn-outline">
+                    了解更多
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat"><span class="stat-num">无需代码</span><span class="stat-label">任何人都能上手</span></div>
+                <div class="stat"><span class="stat-num">秒级生效</span><span class="stat-label">发布无需等待</span></div>
+                <div class="stat"><span class="stat-num">多端适配</span><span class="stat-label">主流 AI 客户端</span></div>
+            </div>
+            <div class="hero-clients" data-animate>
+                <span class="clients-label">已适配主流 AI 客户端</span>
+                <div class="clients-badges">
+                    <span class="client-badge">Trae</span>
+                    <span class="client-badge">Codex</span>
+                    <span class="client-badge">WorkBuddy</span>
+                    <span class="client-badge">Claude Code</span>
+                    <span class="client-badge">Hermes</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Before / After 对比 ===== -->
+    <section class="comparison section section-alt" id="comparison">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">对比</span>
+                <h2>接入 AI，从痛苦到轻松</h2>
+                <p>看看有寸金和没寸金的区别</p>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card comparison-before" data-animate>
+                    <div class="comparison-badge">传统方式</div>
+                    <ul>
+                        <li>每个工具都要找人写代码做对接</li>
+                        <li>为了让 AI 能用，得先改自己的工具</li>
+                        <li>改个参数就要重新部署，等半天</li>
+                        <li>不同类型的工具要用不同的方法接</li>
+                        <li>出了问题不知道是哪一环的毛病</li>
+                    </ul>
+                </div>
+                <div class="comparison-card comparison-after" data-animate>
+                    <div class="comparison-badge">有了寸金</div>
+                    <ul>
+                        <li>零代码接入，自动解析输入输出</li>
+                        <li>原有工具无需任何改动</li>
+                        <li>热加载发布，秒级生效无需重启</li>
+                        <li>桌面应用、脚本、API 统一接入方式</li>
+                        <li>可视化流程编排，所见即所得</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 信任数据 ===== -->
+    <section class="trust-bar section" id="trust">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item" data-animate>
+                    <span class="trust-num">30+</span>
+                    <span class="trust-label">已内置工具</span>
+                </div>
+                <div class="trust-item" data-animate>
+                    <span class="trust-num">5</span>
+                    <span class="trust-label">适配 AI 客户端</span>
+                </div>
+                <div class="trust-item" data-animate>
+                    <span class="trust-num">100%</span>
+                    <span class="trust-label">开源免费</span>
+                </div>
+                <div class="trust-item" data-animate>
+                    <span class="trust-num">&lt;1 分钟</span>
+                    <span class="trust-label">完成首次接入</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 快速开始 ===== -->
+    <section class="quickstart section" id="quickstart">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">快速开始</span>
+                <h2>两步就能开始</h2>
+                <p>不需要安装，不需要配置，下载就能用</p>
+            </div>
+            <div class="quickstart-grid">
+                <div class="quickstart-step" data-animate>
+                    <div class="quickstart-num">01</div>
+                    <div class="quickstart-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2.5"/><path d="M24 14v16M24 30l-6-6M24 30l6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>下载压缩包，解压到桌面</h3>
+                    <p>从下方下载产品包，解压到你想要的任何位置就行——不用安装，不用配置环境，双击就能用。</p>
+                </div>
+                <div class="quickstart-step" data-animate>
+                    <div class="quickstart-num">02</div>
+                    <div class="quickstart-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><polygon points="16,10 38,24 16,38" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>双击「寸金 - 快捷方式」</h3>
+                    <p>找到解压文件夹里的「寸金 - 快捷方式」，双击打开。选工具、做连接、发布给 AI——界面一看就懂。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 使用场景 ===== -->
+    <section class="highlights section section-alt" id="highlights">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">使用场景</span>
+                <h2>看看 AI 能帮你做什么</h2>
+                <p>接入工具后，这些事情 AI 都能帮你搞定</p>
+            </div>
+            <div class="highlight-grid">
+                <div class="highlight-item" data-animate>
+                    <div class="highlight-num">01</div>
+                    <div>
+                        <h3>AI 直接操作你的桌面软件</h3>
+                        <p>把日常用的桌面程序接入寸金，然后在 AI 客户端里直接说"帮我打开 XX 软件，把这个表单填了"，AI 自动替你操作。</p>
+                    </div>
+                </div>
+                <div class="highlight-item" data-animate>
+                    <div class="highlight-num">02</div>
+                    <div>
+                        <h3>AI 帮你跑脚本、查数据</h3>
+                        <p>把你的自动化脚本或内部数据接口接入后，让 AI 自动执行脚本、查询数据，再把结果整理成你能看懂的格式。</p>
+                    </div>
+                </div>
+                <div class="highlight-item" data-animate>
+                    <div class="highlight-num">03</div>
+                    <div>
+                        <h3>串起多个工具，自动完成任务</h3>
+                        <p>比如"先从系统导出数据，再用脚本处理，最后写入另一个系统"——把这些工具串成一条流水线，AI 自动跑完整个流程。</p>
+                    </div>
+                </div>
+                <div class="highlight-item" data-animate>
+                    <div class="highlight-num">04</div>
+                    <div>
+                        <h3>远程工具，浏览器里就能看</h3>
+                        <p>工具在远程电脑上运行，通过寸金的可视化功能，你可以直接在浏览器里看到远程界面的实时画面，随时了解执行状态。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 核心优势 ===== -->
+    <section class="features section" id="architecture">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">核心优势</span>
+                <h2>让每个人都能驾驭 AI 的力量</h2>
+                <p>不需要懂代码，也能让 AI 帮你完成复杂工作</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card" data-animate>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M20 20h8M20 28h5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="36" cy="16" r="5" fill="#6366f1" stroke="#fff" stroke-width="2"/><path d="M34.5 16h3M36 14.5v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3>一键连接你的工具</h3>
+                    <p>你日常使用的任何软件——无论是桌面程序、网页接口还是自动化脚本，几步操作即可让 AI 直接使用，无需任何技术背景。</p>
+                </div>
+                <div class="feature-card" data-animate>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><rect x="6" y="14" width="14" height="14" rx="3" stroke="currentColor" stroke-width="2.5"/><rect x="28" y="14" width="14" height="14" rx="3" stroke="currentColor" stroke-width="2.5"/><path d="M20 21h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="21" r="3" fill="#6366f1"/></svg>
+                    </div>
+                    <h3>适配主流 AI 客户端</h3>
+                    <p>已支持 Trae、Codex、WorkBuddy、Claude Code、Hermes 等主流 AI 客户端工具。你在用的 AI 助手，寸金都能无缝对接。</p>
+                </div>
+                <div class="feature-card" data-animate>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><path d="M12 32l8-8 5 5 11-13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="16" r="4" fill="#6366f1" stroke="#fff" stroke-width="2"/></svg>
+                    </div>
+                    <h3>自动化你的工作流程</h3>
+                    <p>把多个工具串联成一条工作流，AI 自动按顺序执行。重复性的工作交给 AI，你只需要关注结果。</p>
+                </div>
+                <div class="feature-card" data-animate>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><circle cx="18" cy="18" r="6" stroke="currentColor" stroke-width="2.5"/><circle cx="32" cy="18" r="6" stroke="currentColor" stroke-width="2.5"/><circle cx="25" cy="32" r="6" fill="#6366f1" stroke="#fff" stroke-width="2"/></svg>
+                    </div>
+                    <h3>团队共享，一次接入全员受益</h3>
+                    <p>接入的工具可以分享给整个团队。一个人接入，所有人都能在 AI 中使用，逐步积累团队的工具资产。</p>
+                </div>
+                <div class="feature-card" data-animate>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><rect x="10" y="10" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2.5"/><rect x="26" y="26" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2.5"/><path d="M22 26l4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="24" r="3" fill="#6366f1"/></svg>
+                    </div>
+                    <h3>工具市场，即取即用</h3>
+                    <p>开放的插件市场，已有多种常用工具可以直接使用。你也可以导入他人分享的工具包，快速扩展 AI 的能力边界。</p>
+                </div>
+                <div class="feature-card" data-animate>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 48 48" fill="none"><path d="M8 34V14a2 2 0 012-2h28a2 2 0 012 2v20a2 2 0 01-2 2H10a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2.5"/><path d="M8 20h32" stroke="currentColor" stroke-width="2.5"/><rect x="22" y="24" width="10" height="3" rx="1" fill="#6366f1"/><rect x="22" y="30" width="6" height="3" rx="1" fill="#6366f1" opacity="0.6"/></svg>
+                    </div>
+                    <h3>配置修改，即时生效</h3>
+                    <p>随时调整工具参数和配置，修改后立刻生效。不需要重启 AI 客户端，也不需要等待任何部署过程。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 截图展示 ===== -->
+    <section class="screenshots section section-alt" id="screenshots">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">截图展示</span>
+                <h2>一眼看懂 寸金</h2>
+                <p>真实项目运行截图，直观感受插件框架的能力</p>
+            </div>
+            <div class="screenshot-grid">
+                <div class="screenshot-card" data-animate>
+                    <div class="screenshot-frame">
+                        <img class="screenshot-img" src="images/插头管理.png" alt="插头管理" loading="lazy">
+                        <div class="screenshot-caption">在这里选择你要接入的工具，所有已连接的插件一目了然</div>
+                    </div>
+                </div>
+                <div class="screenshot-card" data-animate>
+                    <div class="screenshot-frame">
+                        <img class="screenshot-img" src="images/EditProcess.png" alt="流程编辑" loading="lazy">
+                        <div class="screenshot-caption">拖拽工具串联成工作流，让 AI 自动按顺序执行</div>
+                    </div>
+                </div>
+                <div class="screenshot-card" data-animate>
+                    <div class="screenshot-frame">
+                        <img class="screenshot-img" src="images/VNC远程桌面.png" alt="VNC可视化" loading="lazy">
+                        <div class="screenshot-caption">工具在远程电脑运行，通过浏览器就能实时查看远程界面</div>
+                    </div>
+                </div>
+                <div class="screenshot-card" data-animate>
+                    <div class="screenshot-frame">
+                        <img class="screenshot-img" src="images/Trae执行示例.png" alt="Trae执行示例" loading="lazy">
+                        <div class="screenshot-caption">发布后在 Trae 中就能看到你的工具，直接对话调用</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 演示视频 ===== -->
+    <section class="video-section section" id="video">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">演示视频</span>
+                <h2>1 分钟快速上手</h2>
+                <p>看看如何在寸金中把一个桌面工具接入，只需几步操作</p>
+            </div>
+            <div class="video-wrapper" data-animate>
+                <div class="video-container">
+                    <video controls preload="metadata" poster="images/插头管理.png">
+                        <source src="videos/CJPlug-增加自定义桌面工具为插头.mp4" type="video/mp4">
+                        您的浏览器不支持 HTML5 视频播放，请<a href="videos/CJPlug-增加自定义桌面工具为插头.mp4" download>下载视频</a>后观看。
+                    </video>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="section-header">
+                <p>接入完成后，直接在 Trae 里用 AI 调用你的工具</p>
+            </div>
+            <div class="video-wrapper" data-animate>
+                <div class="video-container">
+                    <video controls preload="metadata" poster="images/Trae执行示例.png">
+                        <source src="videos/CJPlug录屏演示-260617.mp4" type="video/mp4">
+                        您的浏览器不支持 HTML5 视频播放，请<a href="videos/CJPlug录屏演示-260617.mp4" download>下载视频</a>后观看。
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 下载区域 ===== -->
+    <section class="download section section-alt" id="download">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">下载试用</span>
+                <h2>立即开始使用寸金</h2>
+                <p>下载、解压、双击——三步即可开始</p>
+            </div>
+            <div class="download-grid">
+                <div class="download-card" data-animate>
+                    <div class="download-badge">推荐</div>
+                    <h3>产品包</h3>
+                    <p class="download-desc">下载解压即可使用，无需安装，开箱即用。</p>
+                    <ul class="download-features">
+                        <li>寸金完整程序</li>
+                        <li>30 个即用工具插件</li>
+                        <li>快速入门指南</li>
+                        <li>示例工作流模板</li>
+                    </ul>
+                    <div class="download-info">
+                        <span class="download-version">v0.1.0</span>
+                        <span class="download-size">~198 MB</span>
+                    </div>
+                    <a href="https://github.com/liuszhang/CJPlug/releases/download/v0.1.0/CJPlug-v0.1.0.zip" class="btn btn-primary btn-block" download>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        免费下载
+                    </a>
+                </div>
+                <div class="download-card" data-animate>
+                    <h3>开源代码</h3>
+                    <p class="download-desc">寸金完全开源（MIT 协议）。如果你的团队有技术同事，可以分享给他们查看。</p>
+                    <div class="code-block">
+                        <code>git clone https://github.com/liuszhang/CJPlug.git</code>
+                    </div>
+                    <div class="download-info">
+                        <span class="download-version">main</span>
+                        <span class="download-size">开源 MIT</span>
+                    </div>
+                    <a href="https://github.com/liuszhang/CJPlug" class="btn btn-outline btn-block" target="_blank" rel="noopener">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        查看 GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="faq section" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">常见问题</span>
+                <h2>你可能想知道的</h2>
+                <p>关于寸金，最常被问到的几个问题</p>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item" data-animate>
+                    <button class="faq-question" type="button" aria-expanded="false">
+                        <span>需要安装吗？对电脑有什么要求？</span>
+                        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>不需要安装。下载压缩包后解压到任意位置就能用，支持 Windows 10 及以上系统。</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-animate>
+                    <button class="faq-question" type="button" aria-expanded="false">
+                        <span>接入好的工具可以分享给同事吗？</span>
+                        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>可以。一个人接好工具后，可以导出配置文件分享给团队，所有人在自己的 AI 客户端中都能使用。</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-animate>
+                    <button class="faq-question" type="button" aria-expanded="false">
+                        <span>支持哪些 AI 客户端？</span>
+                        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>目前已适配 Trae、Codex、WorkBuddy、Claude Code、Hermes 等主流 AI 客户端，后续还会持续增加。</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-animate>
+                    <button class="faq-question" type="button" aria-expanded="false">
+                        <span>遇到问题怎么办？</span>
+                        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>可以发邮件到 <a href="mailto:liusz@liusz.com">liusz@liusz.com</a>，或在 <a href="https://github.com/liuszhang/CJPlug/issues" target="_blank" rel="noopener">GitHub Issues</a> 上提问，我们会尽快回复。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA 横幅 ===== -->
+    <section class="cta-banner">
+        <div class="container">
+            <h2>让你的 AI 客户端现在就用上新工具</h2>
+            <p>无需技术背景，下载即用，五分钟完成第一个工具接入。</p>
+            <a href="#download" class="btn btn-light">免费下载</a>
+        </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <span class="logo-icon">&#9670;</span>
+                        <span class="logo-text">CJ<span class="logo-dot">.</span>Plug 寸金</span>
+                    </a>
+                    <p>无代码插件工具接入框架，轻松武装你的AI。</p>
+                </div>
+                <div class="footer-links">
+                    <h4>产品</h4>
+                    <a href="#architecture">核心优势</a>
+                    <a href="#highlights">使用场景</a>
+                    <a href="#download">下载</a>
+                </div>
+                <div class="footer-links">
+                    <h4>资源</h4>
+                    <a href="https://github.com/liuszhang/CJPlug" target="_blank" rel="noopener">GitHub 仓库</a>
+                </div>
+                <div class="footer-links">
+                    <h4>社区</h4>
+                    <a href="https://github.com/liuszhang/CJPlug" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://github.com/liuszhang/CJPlug/issues" target="_blank" rel="noopener">Issues</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 CJ.Plug. 基于 MIT 协议开源。</p>
+                <p>Made with <span class="heart">&hearts;</span> for the .NET community</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== Lightbox ===== -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-label="图片预览" aria-modal="true">
+        <span class="lightbox-close" tabindex="0" role="button" aria-label="关闭预览">&times;</span>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="放大预览">
+    </div>
+
+    <!-- ===== 回到顶部 ===== -->
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+    <!-- ===== Toast 提示 ===== -->
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
