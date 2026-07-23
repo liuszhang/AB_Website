@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>寸金平台 - 产品宣传册</title>
+<link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ==================== GLOBAL ==================== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -628,6 +628,64 @@ body {
 .p4-viz-right {
   display: flex; flex-direction: column; gap: 7px;
   flex: 0 0 225px; justify-content: center;
+}
+
+/* ==================== FLOATING PDF BUTTON ==================== */
+.fab-pdf {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0088cc, #005fa3);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,100,200,0.4), 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fab-pdf:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(0,100,200,0.55), 0 3px 12px rgba(0,0,0,0.2);
+}
+.fab-pdf:active {
+  transform: scale(0.95);
+}
+.fab-pdf svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fab-pdf .fab-tooltip {
+  position: absolute;
+  right: 68px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20,30,50,0.9);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.fab-pdf:hover .fab-tooltip {
+  opacity: 1;
+}
+
+@media print {
+  .fab-pdf { display: none !important; }
 }
 
 </style>
@@ -1261,6 +1319,75 @@ body {
   </div>
   <div class="bc-footer"><div class="bc-f-left">寸金平台 . 人工智能智能体国防科技解决方案</div><div class="bc-f-right">保密声明：本文档仅供内部交流使用</div></div>
 </div>
+
+<!-- Floating PDF Download Button -->
+<button class="fab-pdf" onclick="downloadPDF()" title="下载 PDF">
+  <span class="fab-tooltip">下载 PDF</span>
+  <svg viewBox="0 0 24 24">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+function downloadPDF() {
+  var btn = document.querySelector('.fab-pdf');
+  btn.style.display = 'none';
+
+  var pages = document.querySelectorAll('.page');
+  var PAGE_W = 780;
+  var PAGE_H = 1060;
+  var pdf = new jspdf.jsPDF({ unit: 'px', format: [PAGE_W, PAGE_H], orientation: 'portrait' });
+
+  // Temporarily ensure all pages render at full width
+  var savedStyles = [];
+  pages.forEach(function(page) {
+    savedStyles.push(page.style.overflow);
+    page.style.overflow = 'visible';
+  });
+
+  // Override gradient text for html2canvas (it doesn't support background-clip: text)
+  var fixStyle = document.createElement('style');
+  fixStyle.textContent = '.dc-hero-title .cyan { background: none !important; -webkit-text-fill-color: #00d4ff !important; } .cp-hero h1 { background: none !important; -webkit-text-fill-color: inherit !important; }';
+  document.head.appendChild(fixStyle);
+
+  var tasks = [];
+  pages.forEach(function(page, i) {
+    tasks.push(function() {
+      return html2canvas(page, {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        backgroundColor: null,
+        width: PAGE_W,
+        height: PAGE_H,
+        windowWidth: Math.max(PAGE_W, document.documentElement.scrollWidth),
+        windowHeight: Math.max(PAGE_H, document.documentElement.scrollHeight),
+        scrollX: 0,
+        scrollY: 0
+      }).then(function(canvas) {
+        var imgData = canvas.toDataURL('image/jpeg', 0.95);
+        if (i > 0) pdf.addPage([PAGE_W, PAGE_H], 'portrait');
+        pdf.addImage(imgData, 'JPEG', 0, 0, PAGE_W, PAGE_H);
+      });
+    });
+  });
+
+  tasks.reduce(function(p, fn) { return p.then(fn); }, Promise.resolve())
+    .then(function() {
+      // Restore styles
+      fixStyle.remove();
+      pages.forEach(function(page, i) {
+        page.style.overflow = savedStyles[i] || '';
+      });
+      pdf.save('寸金平台-产品手册.pdf');
+      btn.style.display = '';
+    });
+}
+</script>
 
 </body>
 </html>
