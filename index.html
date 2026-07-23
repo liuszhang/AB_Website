@@ -684,8 +684,51 @@ body {
   opacity: 1;
 }
 
+/* ==================== PDF TOAST ==================== */
+.pdf-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  z-index: 10000;
+  background: rgba(20,30,50,0.92);
+  color: #fff;
+  font-size: 14px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,180,255,0.2);
+}
+.pdf-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.pdf-toast .toast-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: toastSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+.pdf-toast .toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+@keyframes toastSpin {
+  to { transform: rotate(360deg); }
+}
+
 @media print {
   .fab-pdf { display: none !important; }
+  .pdf-toast { display: none !important; }
 }
 
 </style>
@@ -1330,33 +1373,78 @@ body {
   </svg>
 </button>
 
+<!-- PDF Toast -->
+<div class="pdf-toast" id="pdfToast">
+  <span class="toast-spinner" id="toastSpinner"></span>
+  <span class="toast-icon" id="toastIcon" style="display:none;"></span>
+  <span id="toastMsg">正在生成 PDF...</span>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
+function showToast(msg, done) {
+  var toast = document.getElementById('pdfToast');
+  var spinner = document.getElementById('toastSpinner');
+  var icon = document.getElementById('toastIcon');
+  var text = document.getElementById('toastMsg');
+  text.textContent = msg;
+  if (done) {
+    spinner.style.display = 'none';
+    icon.style.display = '';
+    icon.textContent = '\u2705';
+  } else {
+    spinner.style.display = '';
+    icon.style.display = 'none';
+  }
+  toast.classList.add('show');
+}
+function hideToast() {
+  document.getElementById('pdfToast').classList.remove('show');
+}
+
 function downloadPDF() {
   var btn = document.querySelector('.fab-pdf');
   btn.style.display = 'none';
+  showToast('正在生成 PDF...');
 
   var pages = document.querySelectorAll('.page');
+  var total = pages.length;
   var PAGE_W = 780;
   var PAGE_H = 1060;
   var pdf = new jspdf.jsPDF({ unit: 'px', format: [PAGE_W, PAGE_H], orientation: 'portrait' });
 
   // Temporarily ensure all pages render at full width
-  var savedStyles = [];
+  var savedOverflow = [];
   pages.forEach(function(page) {
-    savedStyles.push(page.style.overflow);
+    savedOverflow.push(page.style.overflow);
     page.style.overflow = 'visible';
   });
 
-  // Override gradient text for html2canvas (it doesn't support background-clip: text)
-  var fixStyle = document.createElement('style');
-  fixStyle.textContent = '.dc-hero-title .cyan { background: none !important; -webkit-text-fill-color: #00d4ff !important; } .cp-hero h1 { background: none !important; -webkit-text-fill-color: inherit !important; }';
-  document.head.appendChild(fixStyle);
+  // Fix gradient text: html2canvas doesn't support background-clip: text,
+  // so we apply solid colors via inline style (highest specificity)
+  var cyanEls = document.querySelectorAll('.dc-hero-title .cyan');
+  var savedCyan = [];
+  cyanEls.forEach(function(el) {
+    savedCyan.push({ bg: el.style.background, tfc: el.style.webkitTextFillColor, c: el.style.color });
+    el.style.background = 'none';
+    el.style.color = '#00d4ff';
+    el.style.webkitTextFillColor = '#00d4ff';
+  });
+
+  var h1Els = document.querySelectorAll('.cp-hero h1');
+  var savedH1 = [];
+  h1Els.forEach(function(el) {
+    savedH1.push({ bg: el.style.background, tfc: el.style.webkitTextFillColor, c: el.style.color });
+    el.style.background = 'none';
+    el.style.color = '#1a1a2e';
+    el.style.webkitTextFillColor = '#1a1a2e';
+  });
 
   var tasks = [];
   pages.forEach(function(page, i) {
     tasks.push(function() {
+      showToast('正在渲染第 ' + (i + 1) + ' / ' + total + ' 页...');
       return html2canvas(page, {
         scale: 2,
         useCORS: true,
@@ -1378,13 +1466,26 @@ function downloadPDF() {
 
   tasks.reduce(function(p, fn) { return p.then(fn); }, Promise.resolve())
     .then(function() {
-      // Restore styles
-      fixStyle.remove();
-      pages.forEach(function(page, i) {
-        page.style.overflow = savedStyles[i] || '';
+      // Restore all styles
+      cyanEls.forEach(function(el, i) {
+        el.style.background = savedCyan[i].bg;
+        el.style.color = savedCyan[i].c;
+        el.style.webkitTextFillColor = savedCyan[i].tfc;
       });
+      h1Els.forEach(function(el, i) {
+        el.style.background = savedH1[i].bg;
+        el.style.color = savedH1[i].c;
+        el.style.webkitTextFillColor = savedH1[i].tfc;
+      });
+      pages.forEach(function(page, i) {
+        page.style.overflow = savedOverflow[i] || '';
+      });
+      showToast('PDF 生成完成，正在下载...', true);
       pdf.save('寸金平台-产品手册.pdf');
-      btn.style.display = '';
+      setTimeout(function() {
+        hideToast();
+        btn.style.display = '';
+      }, 2000);
     });
 }
 </script>
