@@ -1,0 +1,101 @@
+/* ==================== FLOATING PDF BUTTON ==================== */
+.fab-pdf {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #0088cc, #005fa3);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,100,200,0.4), 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fab-pdf:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(0,100,200,0.55), 0 3px 12px rgba(0,0,0,0.2);
+}
+.fab-pdf:active {
+  transform: scale(0.95);
+}
+.fab-pdf svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fab-pdf .fab-tooltip {
+  position: absolute;
+  right: 68px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20,30,50,0.9);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.fab-pdf:hover .fab-tooltip {
+  opacity: 1;
+}
+
+/* ==================== PDF TOAST ==================== */
+.pdf-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  z-index: 10000;
+  background: rgba(20,30,50,0.92);
+  color: #fff;
+  font-size: 14px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0,180,255,0.2);
+}
+.pdf-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.pdf-toast .toast-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.25);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: toastSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+.pdf-toast .toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+@keyframes toastSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== PRINT ==================== */
+@media print {
+  .fab-pdf { display: none !important; }
+  .pdf-toast { display: none !important; }
+}
